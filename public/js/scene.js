@@ -9,6 +9,7 @@
  *
  */
 
+const BOTTOM_GAP = 80;
 class Scene {
   constructor(_movementCallback) {
     this.movementCallback = _movementCallback;
@@ -19,7 +20,7 @@ class Scene {
 
     //Utility
     this.width = window.innerWidth;
-    this.height = window.innerHeight - 100;
+    this.height = window.innerHeight - BOTTOM_GAP;
 
     //Add Player
     this.addSelf();
@@ -39,10 +40,9 @@ class Scene {
     this.playerGroup.add(this.listener);
 
     //THREE WebGL renderer
-    this.renderer = new THREE.WebGLRenderer({
-      antialiasing: true,
-    });
-    this.renderer.setClearColor(new THREE.Color("lightblue"));
+    this.renderer = new THREE.WebGLRenderer({ antialiasing: true });
+    this.renderer.setClearColor(new THREE.Color("black"));
+    this.renderer.setPixelRatio( window.devicePixelRatio );
     this.renderer.setSize(this.width, this.height);
 
     // add controls:
@@ -58,8 +58,8 @@ class Scene {
     window.addEventListener("keyup", (e) => this.onKeyUp(e), false);
 
     // Helpers
-    this.scene.add(new THREE.GridHelper(500, 500));
-    this.scene.add(new THREE.AxesHelper(10));
+    // this.scene.add(new THREE.GridHelper(2000, 2000));
+    // this.scene.add(new THREE.AxesHelper(10));
 
     this.addLights();
     createEnvironment(this.scene);
@@ -75,23 +75,40 @@ class Scene {
 
   addLights() {
     this.scene.add(new THREE.AmbientLight(0xffffe6, 0.7));
+    this.scene.add(new THREE.DirectionalLight(0xffffff, 0.5));
   }
 
   //////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////
   // Clients 👫
 
+  getBodyGeometry() {
+    return new THREE.BoxGeometry(1, 1, 1)
+  }
+
+  getHeadGeometry(size = 1) {
+    return new THREE.BoxGeometry(1 * size, 1 * size, 0.001)
+  }
+
   addSelf() {
     let videoMaterial = makeVideoMaterial("local");
 
-    let _head = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), videoMaterial);
+    let _head = new THREE.Mesh(this.getHeadGeometry(0.8), videoMaterial);
+    // let _body = new THREE.Mesh(this.getBodyGeometry(), videoMaterial)
+    let _body = new THREE.Mesh(this.getBodyGeometry(), new THREE.MeshStandardMaterial({
+      color: 0xffffff, 
+      roughness: 1,
+      metalness: 1,
+    }))
 
-    _head.position.set(0, 0, 0);
+    _head.position.set(0, 1.5, 0);
+    _body.position.set(0, 0, 0);
 
     // https://threejs.org/docs/index.html#api/en/objects/Group
-    this.playerGroup = new THREE.Group();
-    this.playerGroup.position.set(0, 0.5, 0);
-    this.playerGroup.add(_head);
+    this.playerGroup = new THREE.Group()
+    this.playerGroup.position.set(0, 0.5, 0)
+    this.playerGroup.add(_head)
+    this.playerGroup.add(_body)
 
     // add group to scene
     this.scene.add(this.playerGroup);
@@ -101,15 +118,24 @@ class Scene {
   addClient(_id) {
     let videoMaterial = makeVideoMaterial(_id);
 
-    let _head = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), videoMaterial);
+    let _head = new THREE.Mesh(this.getHeadGeometry(0.8), videoMaterial);
+    // let _body = new THREE.Mesh(this.getBodyGeometry(), videoMaterial)
+    let _body = new THREE.Mesh(this.getBodyGeometry(), new THREE.MeshStandardMaterial({
+      color: 0xffffff, 
+      roughness: 1,
+      metalness: 1,
+    }))
 
     // set position of head before adding to parent object
 
-    _head.position.set(0, 0, 0);
+    _head.position.set(0, 1.5, 0);
+    _body.position.set(0, 0, 0);
 
     // https://threejs.org/docs/index.html#api/en/objects/Group
     var group = new THREE.Group();
-    group.add(_head);
+    group.position.set(0, 0.5, 0)
+    group.add(_head)
+    group.add(_body)
 
     // add group to scene
     this.scene.add(group);
@@ -226,6 +252,7 @@ class Scene {
     if (this.frameCount % 25 === 0) {
       this.updateClientVolumes();
       this.movementCallback();
+      
     }
 
     this.interpolatePositions();
@@ -243,7 +270,7 @@ class Scene {
 
   onWindowResize(e) {
     this.width = window.innerWidth;
-    this.height = Math.floor(window.innerHeight - window.innerHeight * 0.3);
+    this.height = window.innerHeight - BOTTOM_GAP
     this.camera.aspect = this.width / this.height;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.width, this.height);
@@ -269,11 +296,22 @@ function makeVideoMaterial(_id) {
   let videoElement = document.getElementById(_id + "_video");
   let videoTexture = new THREE.VideoTexture(videoElement);
 
-  let videoMaterial = new THREE.MeshBasicMaterial({
-    map: videoTexture,
-    overdraw: true,
-    side: THREE.DoubleSide,
-  });
+  // let videoMaterial = new THREE.MeshBasicMaterial({
+  //   map: videoTexture,
+  //   side: THREE.DoubleSide,
+  // });
+
+  const WRAP_REPEAT = 1
+  videoTexture.wrapS = THREE.RepeatWrapping;
+  videoTexture.wrapT = THREE.RepeatWrapping;
+  videoTexture.repeat.set( WRAP_REPEAT, WRAP_REPEAT );
+
+  const videoMaterial = new THREE.MeshStandardMaterial( {
+    color: 0x909090, 
+    roughness: 1,
+    roughnessMap: videoTexture,
+    metalness: 1
+  } );
 
   return videoMaterial;
 }

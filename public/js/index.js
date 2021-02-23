@@ -369,4 +369,9 @@ function removeClientVideoElementAndCanvas(_id) {
   if (videoEl != null) {
     videoEl.remove();
   }
+
+  let audioEl = document.getElementById(_id + "_audio");
+  if (audioEl != null) {
+    audioEl.remove()
+  }
 }
