@@ -9,7 +9,7 @@
  *
  */
 
-const BOTTOM_GAP = 80;
+const BOTTOM_GAP = 0;
 class Scene {
   constructor(_movementCallback) {
     this.movementCallback = _movementCallback;
@@ -109,6 +109,8 @@ class Scene {
     this.playerGroup.position.set(0, 0.5, 0)
     this.playerGroup.add(_head)
     this.playerGroup.add(_body)
+
+    this.playerGroup.add(listener)
 
     // add group to scene
     this.scene.add(this.playerGroup);

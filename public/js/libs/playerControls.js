@@ -25,7 +25,7 @@ THREE.PlayerControls = function (camera, player, domElement) {
 	this.YAutoRotation = false;
 
 	this.minPolarAngle = 0;
-	this.maxPolarAngle = Math.PI;
+	this.maxPolarAngle = 0.5 * Math.PI;
 
 	this.minDistance = 0;
 	this.maxDistance = Infinity;
