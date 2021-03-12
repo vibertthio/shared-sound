@@ -11,15 +11,16 @@ function createEnvironment(scene) {
   //   scene.add(getNewMesh());
   // }
 
-  rectLights = createLights(scene)
   scene.add(createGround())
   scene.add(createSkydome())
 
-  
+  rectLights = createLights()
+  rectLights.forEach(light => scene.add(light))
 
-  const light = rectLights[0]
-  light.color = new THREE.Color(0x00ff00)
-  light.children[0].material.color = new THREE.Color(0x00ff00)
+  // change a light to green.
+  // const light = rectLights[0]
+  // light.color = new THREE.Color(0x00ff00)
+  // light.children[0].material.color = new THREE.Color(0x00ff00)
 }
 
 function getNewMesh() {
@@ -38,11 +39,11 @@ function updateEnvironment(scene) {
   // rectLights[0].position.y = Math.sin(Date.now() * 0.001 + index) * 1 + 4
 }
 
-function createRectangularLight(scene, color, intensity, width, height, position, lookAt) {
+function createRectangularLight(color, intensity, width, height, position, lookAt) {
   rectLight = new THREE.RectAreaLight( color, intensity, width, height );
   rectLight.position.set(...position);
   rectLight.lookAt(...lookAt);
-  scene.add( rectLight );
+  // scene.add( rectLight );
 
   var rectLightMesh = new THREE.Mesh( new THREE.PlaneBufferGeometry(), new THREE.MeshBasicMaterial( { side: THREE.BackSide } ) );
   rectLightMesh.scale.x = rectLight.width;
@@ -51,12 +52,10 @@ function createRectangularLight(scene, color, intensity, width, height, position
 
   var rectLightMeshBack = new THREE.Mesh( new THREE.PlaneBufferGeometry(), new THREE.MeshBasicMaterial( { color: 0x080808 } ) );
   rectLightMesh.add( rectLightMeshBack );
-
-
   return rectLight
 }
 
-function createLights(scene) {
+function createLights() {
   const CIRCLE_PERCENTAGE = 0.7
   const offsetAngle = Math.PI * -1
   const number = 15
@@ -74,7 +73,7 @@ function createLights(scene) {
     const z = radius * Math.sin(a)
     const y = h * 0.5 + 0.5
 
-    lights[i] = createRectangularLight(scene, 0xffffff, 5, w, h, [x, y, z], [0, y, 0])
+    lights[i] = createRectangularLight(0xffffff, 5, w, h, [x, y, z], [0, y, 0])
   }
 
   return lights

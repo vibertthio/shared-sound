@@ -1,6 +1,6 @@
 This [three.js](threejs.org) template allows multiplayer three.js scenes with integrated audio/video capabilities.  It uses a node server running socket.io to provide multiplayer functionality as well as WebRTC signaling. 
 
-![image of multiplayer 3D scene](/docs/images/threejs-webrtc.gif)
+![image of multiplayer 3D scene](./docs/images/vibert.png)
 
 ## Quickstart:
 
@@ -31,6 +31,7 @@ This space is built using a number of technologies, including:
 
 This template uses code from a number of sources, including: 
 
+* Aidan Nelson.- [threejs-webrtc](https://github.com/AidanNelson/threejs-webrtc)
 * Or Fleisher - [THREE.Multiplayer](https://github.com/juniorxsound/THREE.Multiplayer) server and client setup using socket.io with three.js
 * Mikołaj Wargowski - [Simple Chat App](https://github.com/Miczeq22/simple-chat-app) using [WebRTC](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API) with three.js
 * Zachary Stenger - [Three.js Video Chat](https://github.com/zacharystenger/three-js-video-chat) using [WebRTC](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API)
